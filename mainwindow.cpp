@@ -18,6 +18,23 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(displayArea_);
 
     connect(selector, SIGNAL(selected(int,int,float*)), display, SLOT(setImage(int,int,float*)));
+
+    QAction * connectAction = new QAction("&Connect", this);
+    connectAction->setShortcut(QKeySequence("CTRL+O"));
+    connect(connectAction, SIGNAL(triggered()), selector, SLOT(connectToDatabase()));
+    QAction * exitAction = new QAction("E&xit", this);
+    connect(exitAction, SIGNAL(triggered()), SLOT(close()));
+    QAction * saveImageAction = new QAction("&Save", this);
+    saveImageAction->setShortcut(QKeySequence("CTRL+S"));
+    connect(saveImageAction, SIGNAL(triggered()), display, SLOT(saveCurrentImage()));
+
+
+    QMenu * fileMenu = menuBar()->addMenu("&File");
+    fileMenu->addAction(connectAction);
+    fileMenu->addAction(saveImageAction);
+    fileMenu->addAction(exitAction);
+
+
 }
 
 MainWindow::~MainWindow()

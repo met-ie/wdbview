@@ -37,6 +37,17 @@ uchar scale(float value, float min, float max)
 }
 }
 
+void GridDataDisplay::saveCurrentImage()
+{
+    QString saveFile = QFileDialog::getSaveFileName(this, "Save file", "wdbview.png");
+    qDebug() << saveFile;
+
+    if ( not saveFile.isEmpty() )
+        if ( ! QPixmap::fromImage(image_).save(saveFile) )
+            QMessageBox::critical(this, "Uanble to save", "An error occured when trying to save image " + saveFile, QMessageBox::Ok);
+}
+
+
 uchar * GridDataDisplay::getData_(float * data, int size) const
 {
     LOG_FUNCTION

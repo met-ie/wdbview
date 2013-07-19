@@ -13,6 +13,8 @@ public:
 
 public slots:
     void setImage(int width, int height, float * data);
+
+    void saveCurrentImage();
     
 private:
     uchar * getData_(float * data, int size) const;
