@@ -22,4 +22,5 @@ HEADERS  += mainwindow.h \
     databaseconnectiondialog.h
 
 OTHER_FILES += \
-    README
+    README \
+    COPYING

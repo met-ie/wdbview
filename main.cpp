@@ -30,7 +30,6 @@
 #include <QDebug>
 #include <QFile>
 #include "mainwindow.h"
-#include <fstream>
 
 int main(int argc, char *argv[])
 {

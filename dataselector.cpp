@@ -32,7 +32,6 @@
 #include <QtSql/QSqlQueryModel>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
-#include <stdexcept>
 
 
 DataSelector::DataSelector(QWidget *parent) :
@@ -102,7 +101,7 @@ void DataSelector::entryActivated(const QModelIndex & index)
         emit selected(w, h, data);
 }
 
-void DataSelector::entryActivated(const QItemSelection & selection, const QItemSelection & old)
+void DataSelector::entryActivated(const QItemSelection & selection, const QItemSelection & /*old*/)
 {
     QModelIndexList modelIndexes = selection.indexes();
     if ( not modelIndexes.empty() )

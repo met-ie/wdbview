@@ -30,7 +30,6 @@
 #include "dataselector.h"
 #include "griddatadisplay.h"
 #include <QtGui>
-#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
