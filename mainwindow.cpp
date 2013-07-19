@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
     DataSelector * selector = new DataSelector(this);
     GridDataDisplay * display = new GridDataDisplay(this);
 
-
     QHBoxLayout * layout = new QHBoxLayout(displayArea_);
     layout->addWidget(selector);
     layout->addWidget(display);

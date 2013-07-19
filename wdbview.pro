@@ -13,8 +13,10 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     dataselector.cpp \
-    griddatadisplay.cpp
+    griddatadisplay.cpp \
+    databaseconnectiondialog.cpp
 
 HEADERS  += mainwindow.h \
     dataselector.h \
-    griddatadisplay.h
+    griddatadisplay.h \
+    databaseconnectiondialog.h

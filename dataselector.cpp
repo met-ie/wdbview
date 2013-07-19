@@ -1,4 +1,5 @@
 #include "dataselector.h"
+#include "databaseconnectiondialog.h"
 #include <QtGui>
 #include <QtSql/QSqlQueryModel>
 #include <QtSql/QSqlQuery>
@@ -7,29 +8,44 @@
 
 
 DataSelector::DataSelector(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    model_(0),
+    connectionDialog_(0)
 {
-    database_ = QSqlDatabase::addDatabase("QPSQL");
-    database_.setDatabaseName("wdb");
-
-    if ( ! database_.open() )
-        throw std::runtime_error("unable to connect to database");
-
-    model_ = new QSqlQueryModel;
-    model_->setQuery("SELECT wci.begin('wdb'); SELECT value, dataprovidername, placename, referencetime, validtimeto, valueparametername, dataversion FROM wci_int.gridvalue_v", database_);
-
     view_ = new QTableView(this);
     view_->setSortingEnabled(true);
-    view_->setModel(model_);
-    view_->hideColumn(0);
     view_->setSelectionBehavior(QTableView::SelectRows);
-    view_->resizeColumnsToContents();
     connect(view_, SIGNAL(activated(QModelIndex)), SLOT(entryActivated(QModelIndex)));
-    connect(view_->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(entryActivated(QItemSelection,QItemSelection)));
-
 
     QHBoxLayout * layout = new QHBoxLayout(this);
     layout->addWidget(view_);
+
+    connectToDatabase();
+}
+
+DataSelector::~DataSelector()
+{
+}
+
+void DataSelector::connectToDatabase()
+{
+    if ( ! connectionDialog_ )
+        connectionDialog_ = new DatabaseConnectionDialog(this);
+
+    if ( connectionDialog_->getDatabase(database_) )
+        refresh();
+}
+
+void DataSelector::refresh()
+{
+    delete model_;
+    model_ = new QSqlQueryModel(view_);
+    model_->setQuery("SELECT wci.begin('wdb'); SELECT value, dataprovidername, placename, referencetime, validtimeto, valueparametername, dataversion FROM wci_int.gridvalue_v", database_);
+
+    view_->setModel(model_);
+    view_->hideColumn(0);
+    view_->resizeColumnsToContents();
+    connect(view_->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(entryActivated(QItemSelection,QItemSelection)));
 }
 
 void DataSelector::entryActivated(const QModelIndex & index)
