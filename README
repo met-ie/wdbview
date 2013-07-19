@@ -1,4 +1,5 @@
 WDB DATA VISUALIZER
+===================
 
 This is a very simple program to visualize gridded data in a wdb
 database, mostly for verifying that database contents are resonably
@@ -7,3 +8,12 @@ sane.
 When connected to a database, it will fetch all grid rows (but not the
 grids themselves) from the database. Therefore it is not recomended to
 use this program on huge databases.
+
+
+Building
+--------
+
+Qt4 is required for building this program. You can do it this way:
+
+$ qmake && make
+
