@@ -20,3 +20,6 @@ HEADERS  += mainwindow.h \
     dataselector.h \
     griddatadisplay.h \
     databaseconnectiondialog.h
+
+OTHER_FILES += \
+    README
