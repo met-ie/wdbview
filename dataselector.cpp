@@ -67,7 +67,7 @@ void DataSelector::refresh()
 {
     delete model_;
     model_ = new QSqlQueryModel(view_);
-    model_->setQuery("SELECT wci.begin('wdb'); SELECT value, dataprovidername, placename, referencetime, validtimeto, valueparametername, dataversion FROM wci_int.gridvalue_v", database_);
+    model_->setQuery("SELECT wci.begin('wdb'); SELECT value, dataprovidername, placename, referencetime, validtimeto, valueparametername, dataversion FROM wci.read(NULL,NULL, NULL,NULL, NULL,NULL, NULL,NULL::wci.returngid)", database_);
 
     view_->setModel(model_);
     view_->hideColumn(0);
