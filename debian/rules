@@ -3,4 +3,3 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/qmake.mk
 
-DEB_DH_LINK_ARGS = /usr/bin/netcdfLoad /usr/lib/wdb/netcdfLoad

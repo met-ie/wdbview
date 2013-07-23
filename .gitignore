@@ -3,3 +3,11 @@ Makefile
 moc_*.cpp
 wdbview
 wdbview.pro.user
+debian/files
+debian/stamp-makefile-build
+debian/stamp-makefile-install
+debian/wdbview-*.debhelper.log
+debian/wdbview-*.substvars
+debian/wdbview-*/
+wdbview*.tar.gz
+
