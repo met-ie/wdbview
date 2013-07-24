@@ -15,3 +15,4 @@ wdbview*.tar.gz
 *.diff.gz
 *.dsc
 *.changes
+*.upload
