@@ -21,6 +21,12 @@ HEADERS  += mainwindow.h \
     griddatadisplay.h \
     databaseconnectiondialog.h
 
+
+isEmpty(PREFIX):PREFIX = /usr
+BINDIR = $$PREFIX/bin
+INSTALLS += target
+target.path = $$BINDIR
+
 OTHER_FILES += \
     README \
     COPYING

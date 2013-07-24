@@ -11,3 +11,7 @@ debian/wdbview-*.substvars
 debian/wdbview-*/
 wdbview*.tar.gz
 
+*.deb
+*.diff.gz
+*.dsc
+*.changes
