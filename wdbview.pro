@@ -22,7 +22,7 @@ HEADERS  += mainwindow.h \
     databaseconnectiondialog.h
 
 
-isEmpty(PREFIX):PREFIX = /usr
+isEmpty(PREFIX):PREFIX = /usr/local
 BINDIR = $$PREFIX/bin
 INSTALLS += target
 target.path = $$BINDIR
