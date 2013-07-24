@@ -30,3 +30,5 @@ target.path = $$BINDIR
 OTHER_FILES += \
     README \
     COPYING
+
+DISTFILES += $$OTHER_FILES
