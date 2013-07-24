@@ -33,6 +33,9 @@
 #include <QtGui/QImage>
 
 
+/**
+ * Display area for grid images
+ */
 class GridDataDisplay : public QLabel
 {
     Q_OBJECT
@@ -40,8 +43,14 @@ public:
     explicit GridDataDisplay(QWidget *parent = 0);
 
 public slots:
+    /**
+     * Set current image
+     */
     void setImage(int width, int height, float * data);
 
+    /**
+     * Save currently displayed image to file
+     */
     void saveCurrentImage();
     
 private:

@@ -37,6 +37,9 @@
 class QSqlQueryModel;
 class DatabaseConnectionDialog;
 
+/**
+ * Table for showing all available data in database
+ */
 class DataSelector : public QWidget
 {
     Q_OBJECT
@@ -45,10 +48,20 @@ public:
     ~DataSelector();
     
 public slots:
+    /**
+     * Show a connection dialog, and attempt to connect to a wdb database
+     */
     void connectToDatabase();
+
+    /**
+     * Refresh table with new data for wdb
+     */
     void refresh();
 
 signals:
+    /**
+     * Emitted when a new entry has been highlighted
+     */
     void selected(int width, int height, float * data);
 
 private slots:

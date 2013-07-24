@@ -36,6 +36,9 @@ class QLabel;
 
 
 
+/**
+ * Main window, putting data selection and display together, along with menus
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

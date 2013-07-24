@@ -37,12 +37,21 @@ class QSqlDatabase;
 class QLineEdit;
 
 
+/**
+ * Dialog for specifying a database to connect to
+ */
 class DatabaseConnectionDialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit DatabaseConnectionDialog(QWidget *parent = 0);
 
+    /**
+     * Display dialog, and unless cancelled, connect to database.
+     *
+     * @param out This object will be assigned the database connection
+     * @returns true on a successful connect, false otherwise.
+     */
     bool getDatabase(QSqlDatabase & out);
 
 
