@@ -42,6 +42,9 @@ class GridDataDisplay : public QLabel
 public:
     explicit GridDataDisplay(QWidget *parent = 0);
 
+signals:
+    void newMinMax(float min, float max) const;
+
 public slots:
     /**
      * Set current image

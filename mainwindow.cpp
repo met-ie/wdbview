@@ -28,15 +28,17 @@
 
 #include "mainwindow.h"
 #include "dataselector.h"
-#include "griddatadisplay.h"
+#include "griddatadisplaywidget.h"
 #include <QtGui>
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     QWidget * displayArea_ = new QWidget(this);
     DataSelector * selector = new DataSelector(this);
-    GridDataDisplay * display = new GridDataDisplay(this);
+    GridDataDisplayWidget * display = new GridDataDisplayWidget(this);
 
     QHBoxLayout * layout = new QHBoxLayout(displayArea_);
     layout->addWidget(selector);
@@ -61,10 +63,17 @@ MainWindow::MainWindow(QWidget *parent)
     fileMenu->addAction(saveImageAction);
     fileMenu->addAction(exitAction);
 
+    statusBar()->showMessage("Ready", 500);
 
+    connect(display, SIGNAL(newMinMax(float,float)), SLOT(updateStatus(float,float)));
 }
 
 MainWindow::~MainWindow()
 {   
 }
 
+void MainWindow::updateStatus(float min, float max)
+{
+    QString message = QString("Low: ") + QString::number(min) + QString(" High: ") + QString::number(max);
+    statusBar()->showMessage(message);
+}

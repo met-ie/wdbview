@@ -34,7 +34,7 @@
 
 GridDataDisplay::GridDataDisplay(QWidget *parent) :
     QLabel(parent)
-{
+{    
 }
 
 void GridDataDisplay::setImage(int width, int height, float * data)
@@ -83,13 +83,7 @@ uchar * GridDataDisplay::getData_(float * data, int size) const
     float min = * std::min_element(data, data + size);
     float max = * std::max_element(data, data + size);
 
-//    min = 99000;
-//    max = 103000;
-
-
-    qDebug() << "range: " << min << " - " << max;
-    if ( min == max )
-        qDebug("damn");
+    emit newMinMax(min, max);
 
     uchar * ret = new uchar[size];
 
