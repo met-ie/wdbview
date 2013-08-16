@@ -14,6 +14,7 @@ public:
 
 signals:
     void newMinMax(float min, float max) const;
+    void currentMouseOverValue(float value) const;
 
 public slots:
 

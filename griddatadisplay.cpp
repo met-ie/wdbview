@@ -28,6 +28,8 @@
 
 #include "griddatadisplay.h"
 #include <QtGui>
+#include <QDebug>
+#include <QColor>
 
 
 #define LOG_FUNCTION struct L { L(const char * f) { qDebug() << f; }  ~L() { qDebug("done"); } } l(__func__);
@@ -48,6 +50,8 @@ void GridDataDisplay::setImage(int width, int height, float * data)
     image_ = QImage(imageData, width, height, width, QImage::Format_Indexed8);
 
     setPixmap(QPixmap::fromImage(image_));
+
+    setMouseTracking(true);
 }
 
 namespace
@@ -56,8 +60,8 @@ uchar scale(float value, float min, float max)
 {
     if ( value < min )
         return 0;
-    if ( value > max )
-        return 0;
+    if ( value >= max )
+        return 255;
 
     float range = max - min;
     float step = range / 256;
@@ -75,6 +79,19 @@ void GridDataDisplay::saveCurrentImage()
             QMessageBox::critical(this, "Uanble to save", "An error occured when trying to save image " + saveFile, QMessageBox::Ok);
 }
 
+void GridDataDisplay::mouseMoveEvent(QMouseEvent * event)
+{
+    // Dette er feil: Vi må hente verdien fra dataene!
+    // Ta vare på data som lastes ned, og bruk det til oppslag
+
+    const QSize & size = image_.size();
+    unsigned index = event->x() + (event->y() * size.width());
+
+    emit currentMouseOverValue(data_[index]);
+
+    //emit currentMouseOverValue(qGray(image_.pixel(event->x(), event->y())));
+}
+
 
 uchar * GridDataDisplay::getData_(float * data, int size) const
 {
@@ -82,6 +99,14 @@ uchar * GridDataDisplay::getData_(float * data, int size) const
 
     float min = * std::min_element(data, data + size);
     float max = * std::max_element(data, data + size);
+
+    const QSize oldSize = image_.size();
+    if ( oldSize.width() * oldSize.height() != size )
+    {
+        qDebug() << "allocating new data array, of size " << size;
+        data_ = boost::shared_array<float>(new float[size]);
+    }
+    std::copy(data, data + size, data_.get());
 
     emit newMinMax(min, max);
 

@@ -4,7 +4,7 @@ set -e
 
 APP=wdbview
 # TODO: dynamically find version
-VERSION=1.0.0
+VERSION=1.0.1
 PACKAGE_VERSION=`echo $VERSION | sed s/\\..$//`
 DEB_VERSION=$VERSION-1
 

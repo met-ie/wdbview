@@ -1,3 +1,9 @@
+wdbview (1.0.1-1) precise; urgency=low
+
+  * new version
+
+ -- Vegard Bønes <vegard.bones@met.no>  Thu, 15 Aug 2013 14:00:45 +0200
+
 wdbview (1.0.0-1) precise; urgency=low
 
   * Initial release.

@@ -31,7 +31,7 @@
 
 #include <QLabel>
 #include <QtGui/QImage>
-
+#include <boost/shared_array.hpp>
 
 /**
  * Display area for grid images
@@ -44,6 +44,7 @@ public:
 
 signals:
     void newMinMax(float min, float max) const;
+    void currentMouseOverValue(float value) const;
 
 public slots:
     /**
@@ -55,10 +56,14 @@ public slots:
      * Save currently displayed image to file
      */
     void saveCurrentImage();
-    
+
+protected:
+    void mouseMoveEvent(QMouseEvent * event);
+
 private:
     uchar * getData_(float * data, int size) const;
 
+    mutable boost::shared_array<float> data_;
     QImage image_;
 };
 

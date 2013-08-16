@@ -49,6 +49,7 @@ public:
 
 public slots:
     void updateStatus(float min, float max);
+    void updateCurrentValue(float mousovervalue);
 };
 
 #endif // MAINWINDOW_H

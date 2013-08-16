@@ -66,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar()->showMessage("Ready", 500);
 
     connect(display, SIGNAL(newMinMax(float,float)), SLOT(updateStatus(float,float)));
+    connect(display, SIGNAL(currentMouseOverValue(float)), SLOT(updateCurrentValue(float)));
 }
 
 MainWindow::~MainWindow()
@@ -75,5 +76,11 @@ MainWindow::~MainWindow()
 void MainWindow::updateStatus(float min, float max)
 {
     QString message = QString("Low: ") + QString::number(min) + QString(" High: ") + QString::number(max);
+    statusBar()->showMessage(message);
+}
+
+void MainWindow::updateCurrentValue(float mousovervalue)
+{
+    QString message = QString("Current value: ") + QString::number(mousovervalue);
     statusBar()->showMessage(message);
 }

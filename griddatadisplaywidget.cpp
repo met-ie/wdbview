@@ -2,6 +2,7 @@
 #include "griddatadisplay.h"
 #include <QVBoxLayout>
 #include <QScrollArea>
+#include <QMouseEvent>
 
 GridDataDisplayWidget::GridDataDisplayWidget(QWidget *parent) :
     QWidget(parent)
@@ -19,6 +20,7 @@ GridDataDisplayWidget::GridDataDisplayWidget(QWidget *parent) :
     mainLayout->addWidget(scrollArea);
 
     connect(display_, SIGNAL(newMinMax(float,float)), SIGNAL(newMinMax(float,float)));
+    connect(display_, SIGNAL(currentMouseOverValue(float)), SIGNAL(currentMouseOverValue(float)));
 }
 
 void GridDataDisplayWidget::setImage(int width, int height, float * data)
@@ -31,4 +33,3 @@ void GridDataDisplayWidget::saveCurrentImage()
 {
     display_->saveCurrentImage();
 }
-
