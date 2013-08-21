@@ -8,6 +8,7 @@ QT       += core gui sql
 
 TARGET = wdbview
 TEMPLATE = app
+VERSION = 1.1.0
 
 
 SOURCES += main.cpp\
@@ -25,12 +26,19 @@ HEADERS  += mainwindow.h \
 
 
 isEmpty(PREFIX):PREFIX = /usr/local
+
 BINDIR = $$PREFIX/bin
 INSTALLS += target
 target.path = $$BINDIR
 
+icon.files = share/no.met.wdb.wdbview.desktop
+icon.path = $$PREFIX/share/applications
+
+INSTALLS += icon
+
 OTHER_FILES += \
     README \
-    COPYING
+    COPYING \
+    share/no.met.wdb.wdbview.desktop
 
 DISTFILES += $$OTHER_FILES

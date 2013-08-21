@@ -5,12 +5,11 @@ Maintainer: Vegard Bønes <vegard.bones@met.no>
 Build-Depends: debhelper (>= 7), autotools-dev, cdbs, libqt4-dev
 Standards-Version: 3.9.3 
 
-Package: wdbview-1.0
+Package: wdbview-1.1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Provides: wdbview
-Conflicts: wdbview
-Description: visualize gridded data in a wdb database
+Replaces: wdbview
+Description: Visualize gridded data in a wdb database
  A very simple program to visualize gridded data in a wdb database, mostly 
  for verifying that database contents are resonably sane. 
-

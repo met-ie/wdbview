@@ -3,8 +3,7 @@
 set -e
 
 APP=wdbview
-# TODO: dynamically find version
-VERSION=1.0.1
+VERSION=`grep ^VERSION wdbview.pro | awk '{ print $3; }'`
 PACKAGE_VERSION=`echo $VERSION | sed s/\\..$//`
 DEB_VERSION=$VERSION-1
 
@@ -33,4 +32,4 @@ lintian ../${APP}-${PACKAGE_VERSION}_${DEB_VERSION}_$ARCHITECTURE.deb ../${APP}_
 
 
 cd ..
-rm -r $BUILD_DIR
+#rm -r $BUILD_DIR
