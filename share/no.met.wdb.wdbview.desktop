@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=WDBview
+Comment=Display gridded data from a wdb database
+Exec=wdbview
+MimeType=application/x-ms-dos-executable;application/x-msi;application/x-ms-shortcut;
+Icon=wdb
+
