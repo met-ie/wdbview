@@ -34,7 +34,7 @@
 #include <QtSql/QSqlDatabase>
 
 
-class QSqlQueryModel;
+class QStandardItemModel;
 class DatabaseConnectionDialog;
 
 /**
@@ -71,8 +71,8 @@ private slots:
 private:
 
     QSqlDatabase database_;
-    QTableView * view_;
-    QSqlQueryModel * model_;
+    QTreeView * view_;
+    QStandardItemModel * model_;
     DatabaseConnectionDialog * connectionDialog_;
 };
 

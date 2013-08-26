@@ -39,7 +39,7 @@ DataSelector::DataSelector(QWidget *parent) :
     model_(0),
     connectionDialog_(0)
 {
-    view_ = new QTableView(this);
+    view_ = new QTreeView(this);
     view_->setSortingEnabled(true);
     view_->setSelectionBehavior(QTableView::SelectRows);
     connect(view_, SIGNAL(activated(QModelIndex)), SLOT(entryActivated(QModelIndex)));
@@ -63,33 +63,118 @@ void DataSelector::connectToDatabase()
         refresh();
 }
 
+namespace
+{
+struct ModelFetcher
+{
+    ModelFetcher(QStandardItemModel & parent) :
+        parent(parent)
+    {}
+    QStandardItem * operator () (int index)
+    {
+        return parent.item(index);
+    }
+    QStandardItemModel & parent;
+};
+
+struct ChildFetcher
+{
+    ChildFetcher(QStandardItem & parent) :
+        parent(parent)
+    {}
+    QStandardItem * operator () (int index)
+    {
+        return parent.child(index);
+    }
+    QStandardItem & parent;
+};
+
+template<typename Fetcher>
+QStandardItem * getEntry(const QVariant & entry, Fetcher fetcher)
+{
+    QString entryValue = entry.toString();
+    if ( entryValue.isEmpty() )
+        entryValue = "<no value>";
+    QStandardItem * ret = 0;
+    for ( int i = 0; ; ++ i )
+    {
+        QStandardItem * item = fetcher(i);
+        if ( ! item )
+            break;
+        if ( item->text() == entryValue )
+        {
+            ret = item;
+            break;
+        }
+    }
+    if ( ! ret )
+    {
+        ret = new QStandardItem(entryValue);
+        fetcher.parent.appendRow(ret);
+    }
+    return ret;
+}
+
+bool hasManyDataVersions(const QSqlQuery & /*query*/)
+{
+    return false;
+}
+}
+
 void DataSelector::refresh()
 {
     delete model_;
-    model_ = new QSqlQueryModel(view_);
-    model_->setQuery("SELECT wci.begin('wdb'); SELECT value, dataprovidername, placename, referencetime, validtimeto, valueparametername, dataversion FROM wci.read(NULL,NULL, NULL,NULL, NULL,NULL, NULL,NULL::wci.returngid)", database_);
+
+    QString queryStatement = "SELECT wci.begin('wdb'); ";
+    queryStatement += "SELECT dataprovidername, placename, referencetime, valueparametername, dataversion, validtimeto, value ";
+    queryStatement += "FROM wci.read(NULL,NULL, NULL,NULL, NULL,NULL, NULL,NULL::wci.returngid) ";
+    queryStatement += "ORDER BY 1, 2, 3, 4, 5, 6";
+
+    QSqlQuery query(queryStatement, database_);
+
+    model_ = new QStandardItemModel(this);
+    model_->setHorizontalHeaderLabels(QStringList("Data"));
+    while ( query.next() )
+    {
+        QStandardItem * item;
+        item = getEntry<ModelFetcher>(query.value(0), * model_);
+        item = getEntry<ChildFetcher>(query.value(1), * item);
+        item = getEntry<ChildFetcher>(query.value(2), * item);
+        item = getEntry<ChildFetcher>(query.value(3), * item);
+        if ( hasManyDataVersions(query) )
+            item = getEntry<ChildFetcher>(query.value(4), * item);
+        item = getEntry<ChildFetcher>(query.value(5), * item);
+        item->setData(query.value(6), Qt::UserRole); // storing GID value in UserRole
+    }
 
     view_->setModel(model_);
-    view_->hideColumn(0);
-    view_->resizeColumnsToContents();
+    //view_->expandAll();
     connect(view_->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(entryActivated(QItemSelection,QItemSelection)));
 }
 
 void DataSelector::entryActivated(const QModelIndex & index)
 {
-    QModelIndex i = index.sibling(index.row(), 0);
-    QVariant vdata = model_->data(i);
+    if ( not index.isValid() )
+        return;
+    QStandardItem *	item = model_->itemFromIndex(index);
+    if ( item->hasChildren() )
+        return;
 
-    QString q = "SELECT wci.begin('wdb'); SELECT grid, numberx, numbery FROM wci.fetch(" + QString::number(vdata.toLongLong()) + ", NULL::wci.grid)";
+    //QModelIndex i = index.sibling(index.row(), 1);
+    QVariant vdata = model_->data(index, Qt::UserRole); // getting GID value from UserRole
+
+    QString q = "SELECT wci.begin('wdb'); SELECT grid, numberx, numbery FROM wci.fetch(" + vdata.toString() + ", NULL::wci.grid)";
+    qDebug() << q;
     QSqlQuery query = database_.exec(q);
 
     if ( not query.next() )
         return;
+
     QSqlRecord record = query.record();
     int w = record.value(1).toDouble();
     int h = record.value(2).toDouble();
 
-    qDebug() << vdata.toLongLong() << ":\t" << w << ", " << h;
+    qDebug() << vdata.toString() << ":\t" << w << ", " << h;
 
     QVariant grid = record.value(0);
     QByteArray bdata = grid.toByteArray();
