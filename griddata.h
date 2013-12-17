@@ -1,6 +1,7 @@
 #ifndef GRIDDATA_H
 #define GRIDDATA_H
 
+#include <QObject>
 #include <QImage>
 #include <boost/noncopyable.hpp>
 #include <vector>
@@ -9,15 +10,16 @@
 /**
  * Data for a single grid, with metainformation.
  */
-class GridData : boost::noncopyable
+class GridData : public QObject, boost::noncopyable
 {
+    Q_OBJECT
 public:
 
-    typedef std::vector<float>::size_type size_type;
+    typedef unsigned size_type;
 
-    GridData();
-    GridData(const float * data, size_type xSize, size_type ySize);
-    ~GridData();
+    GridData(QObject * parent = 0);
+    GridData(const float * data, size_type xSize, size_type ySize, QObject * parent = 0);
+    virtual ~GridData();
 
     bool empty() const { return data_.empty(); }
     size_type size() const;
@@ -36,10 +38,19 @@ public:
     /// Get an image representation of this data
     QImage getImage() const;
 
+
+public slots:
     /**
      * Update contents of the object
      */
-    void set(const float * data, size_type xSize, size_type ySize);
+    void set(const float * data, unsigned xSize, unsigned ySize);
+
+signals:
+    /**
+     * Emitted when the contained data has changed
+     */
+    void newData(const GridData & gridData);
+
 
 private:
     std::vector<float> data_;

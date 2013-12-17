@@ -7,12 +7,14 @@
 
 
 
-GridData::GridData() :
+GridData::GridData(QObject * parent) :
+    QObject(parent),
     xSize_(1)
 {
 }
 
-GridData::GridData(const float * data, size_type xSize, size_type ySize)
+GridData::GridData(const float * data, size_type xSize, size_type ySize, QObject * parent) :
+    QObject(parent)
 {
     set(data, xSize, ySize);
 }
@@ -34,6 +36,8 @@ void GridData::set(const float * data, size_type xSize, size_type ySize)
     std::copy(data, data + size, data_.begin());
 
     xSize_ = xSize;
+
+    emit newData(* this);
 }
 
 GridData::size_type GridData::size() const

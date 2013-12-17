@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class GridData;
 class GridDataDisplay;
 
 
@@ -10,18 +11,14 @@ class GridDataDisplayWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GridDataDisplayWidget(QWidget *parent = 0);
+    explicit GridDataDisplayWidget(GridData * gridData, QWidget *parent = 0);
+
+    float getCurrentMouseOverValue() const;
 
 signals:
-    void newMinMax(float min, float max) const;
     void currentMouseOverValue(float value) const;
 
 public slots:
-
-    /**
-     * Set current image
-     */
-    void setImage(int width, int height, float * data);
 
     /**
      * Save currently displayed image to file

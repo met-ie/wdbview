@@ -33,7 +33,7 @@
 #include <QtGui/QPixmap>
 
 class QLabel;
-
+class GridData;
 
 
 /**
@@ -48,7 +48,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void updateStatus(float min, float max);
+    void updateStatus(const GridData & gridData);
     void updateCurrentValue(float mousovervalue);
 };
 

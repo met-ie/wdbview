@@ -4,10 +4,10 @@
 #include <QScrollArea>
 #include <QMouseEvent>
 
-GridDataDisplayWidget::GridDataDisplayWidget(QWidget *parent) :
+GridDataDisplayWidget::GridDataDisplayWidget(GridData * gridData, QWidget *parent) :
     QWidget(parent)
 {
-    display_ = new GridDataDisplay(this);
+    display_ = new GridDataDisplay(gridData, this);
     display_->setBackgroundRole(QPalette::Base);
     display_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     display_->setScaledContents(true);
@@ -19,15 +19,14 @@ GridDataDisplayWidget::GridDataDisplayWidget(QWidget *parent) :
     QVBoxLayout * mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(scrollArea);
 
-    connect(display_, SIGNAL(newMinMax(float,float)), SIGNAL(newMinMax(float,float)));
     connect(display_, SIGNAL(currentMouseOverValue(float)), SIGNAL(currentMouseOverValue(float)));
 }
 
-void GridDataDisplayWidget::setImage(int width, int height, float * data)
+float GridDataDisplayWidget::getCurrentMouseOverValue() const
 {
-    display_->setImage(width, height, data);
-    display_->adjustSize();
+    return display_->getCurrentMouseOverValue();
 }
+
 
 void GridDataDisplayWidget::saveCurrentImage()
 {

@@ -31,25 +31,40 @@
 #include <QtGui>
 #include <QDebug>
 #include <QColor>
+#include <limits>
 
 
 
-GridDataDisplay::GridDataDisplay(QWidget *parent) :
-    QLabel(parent)
+GridDataDisplay::GridDataDisplay(GridData * gridData, QWidget *parent) :
+    QLabel(parent),
+    data_(gridData)
 {    
+    connect(data_, SIGNAL(newData(GridData)), SLOT(refreshImage()));
 }
 
-void GridDataDisplay::setImage(int width, int height, float * data)
+float GridDataDisplay::getCurrentMouseOverValue() const
+{
+    QPoint p = mapFromGlobal(QCursor::pos());
+    try
+    {
+        return data_->value(p.x(), p.y());
+    }
+    catch(std::exception & e)
+    {
+        return std::numeric_limits<float>::quiet_NaN();
+    }
+}
+
+void GridDataDisplay::refreshImage()
 {
     LOG_FUNCTION
 
-    data_.set(data, width, height);
-    emit newMinMax(data_.min(), data_.max());
-
-    QImage image = data_.getImage();
+    QImage image = data_->getImage();
     setPixmap(QPixmap::fromImage(image));
 
     setMouseTracking(true);
+
+    adjustSize();
 }
 
 void GridDataDisplay::saveCurrentImage()
@@ -58,11 +73,11 @@ void GridDataDisplay::saveCurrentImage()
     qDebug() << saveFile;
 
     if ( not saveFile.isEmpty() )
-        if ( ! QPixmap::fromImage(data_.getImage()).save(saveFile) )
+        if ( ! QPixmap::fromImage(data_->getImage()).save(saveFile) )
             QMessageBox::critical(this, "Uanble to save", "An error occured when trying to save image " + saveFile, QMessageBox::Ok);
 }
 
 void GridDataDisplay::mouseMoveEvent(QMouseEvent * event)
 {
-    emit currentMouseOverValue(data_.value(event->x(), event->y()));
+    emit currentMouseOverValue(data_->value(event->x(), event->y()));
 }

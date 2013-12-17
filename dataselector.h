@@ -62,7 +62,7 @@ signals:
     /**
      * Emitted when a new entry has been highlighted
      */
-    void selected(int width, int height, float * data);
+    void selected(const float * data, unsigned width, unsigned height);
 
 private slots:
     void entryActivated(const QModelIndex & index);

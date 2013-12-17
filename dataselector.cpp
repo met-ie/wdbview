@@ -183,7 +183,7 @@ void DataSelector::entryActivated(const QModelIndex & index)
     if ( ! data )
         qDebug("No data");
     else
-        emit selected(w, h, data);
+        emit selected(data, w, h);
 }
 
 void DataSelector::entryActivated(const QItemSelection & selection, const QItemSelection & /*old*/)

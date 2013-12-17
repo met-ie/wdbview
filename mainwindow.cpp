@@ -28,7 +28,9 @@
 
 #include "mainwindow.h"
 #include "dataselector.h"
+#include "gridmetadatadisplay.h"
 #include "griddatadisplaywidget.h"
+#include "griddata.h"
 #include <QtGui>
 
 
@@ -38,15 +40,23 @@ MainWindow::MainWindow(QWidget *parent)
 {
     QWidget * displayArea_ = new QWidget(this);
     DataSelector * selector = new DataSelector(this);
-    GridDataDisplayWidget * display = new GridDataDisplayWidget(this);
+
+
+    GridData * gridData = new GridData(this);
+
+    GridDataDisplayWidget * display = new GridDataDisplayWidget(gridData, this);
+    GridMetadataDisplay * metadataDisplay = new GridMetadataDisplay(gridData, this);
 
     QHBoxLayout * layout = new QHBoxLayout(displayArea_);
-    layout->addWidget(selector);
+    QVBoxLayout * metadataLayout = new QVBoxLayout(displayArea_);
+    metadataLayout->addWidget(selector);
+    metadataLayout->addWidget(metadataDisplay);
+    layout->addLayout(metadataLayout);
     layout->addWidget(display);
 
     setCentralWidget(displayArea_);
 
-    connect(selector, SIGNAL(selected(int,int,float*)), display, SLOT(setImage(int,int,float*)));
+    connect(selector, SIGNAL(selected(const float*,uint,uint)), gridData, SLOT(set(const float*,uint,uint)));
 
     QAction * connectAction = new QAction("&Connect", this);
     connectAction->setShortcut(QKeySequence("CTRL+O"));
@@ -65,17 +75,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     statusBar()->showMessage("Ready", 500);
 
-    connect(display, SIGNAL(newMinMax(float,float)), SLOT(updateStatus(float,float)));
+    connect(gridData, SIGNAL(newData(GridData)), SLOT(updateStatus(GridData)));
+
     connect(display, SIGNAL(currentMouseOverValue(float)), SLOT(updateCurrentValue(float)));
+    connect(display, SIGNAL(currentMouseOverValue(float)), metadataDisplay, SLOT(setCurrent(float)));
 }
 
 MainWindow::~MainWindow()
 {   
 }
 
-void MainWindow::updateStatus(float min, float max)
+void MainWindow::updateStatus(const GridData & gridData)
 {
-    QString message = QString("Low: ") + QString::number(min) + QString(" High: ") + QString::number(max);
+    QString message = QString("Low: ") + QString::number(gridData.min()) + QString(" High: ") + QString::number(gridData.max());
     statusBar()->showMessage(message);
 }
 

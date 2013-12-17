@@ -39,28 +39,29 @@ class GridDataDisplay : public QLabel
 {
     Q_OBJECT
 public:
-    explicit GridDataDisplay(QWidget *parent = 0);
+    explicit GridDataDisplay(GridData * gridData, QWidget *parent = 0);
+
+    float getCurrentMouseOverValue() const;
 
 signals:
     void newMinMax(float min, float max) const;
     void currentMouseOverValue(float value) const;
 
 public slots:
-    /**
-     * Set current image
-     */
-    void setImage(int width, int height, float * data);
+
+    void refreshImage();
 
     /**
      * Save currently displayed image to file
      */
     void saveCurrentImage();
 
+
 protected:
     void mouseMoveEvent(QMouseEvent * event);
 
 private:
-    GridData data_;
+    GridData * data_;
 };
 
 #endif // GRIDDATADISPLAY_H
