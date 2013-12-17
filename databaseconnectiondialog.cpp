@@ -27,6 +27,7 @@
 */
 
 #include "databaseconnectiondialog.h"
+#include "logging.h"
 #include <QtGui>
 
 
@@ -79,7 +80,7 @@ DatabaseConnectionDialog::DatabaseConnectionDialog(QWidget *parent) :
 
 bool DatabaseConnectionDialog::getDatabase(QSqlDatabase & database)
 {
-    qDebug() << __func__;
+    LOG_FUNCTION
 
     if ( exec() )
     {

@@ -27,53 +27,27 @@
 */
 
 #include "griddatadisplay.h"
+#include "logging.h"
 #include <QtGui>
 #include <QDebug>
 #include <QColor>
 
 
-#define LOG_FUNCTION struct L { L(const char * f) { qDebug() << f; }  ~L() { qDebug("done"); } } l(__func__);
 
 GridDataDisplay::GridDataDisplay(QWidget *parent) :
     QLabel(parent)
 {    
 }
 
-namespace
-{
-uchar scale(float value, float min, float max)
-{
-    if ( value < min )
-        return 0;
-    if ( value >= max )
-        return 255;
-
-    float range = max - min;
-    float step = range / 256;
-    return (value - min) / step;
-}
-}
-
 void GridDataDisplay::setImage(int width, int height, float * data)
 {
     LOG_FUNCTION
 
-    int size = width * height;
-    if ( data_.size() == size )
-        std::copy(data, data + size, data_.begin());
-    else
-        data_ = std::vector<float>(data, data + size);
+    data_.set(data, width, height);
+    emit newMinMax(data_.min(), data_.max());
 
-    float min = * std::min_element(data_.begin(), data_.end());
-    float max = * std::max_element(data_.begin(), data_.end());
-    emit newMinMax(min, max);
-
-
-    uchar * imageData = new uchar[data_.size()];
-    for ( unsigned i = 0; i < data_.size(); ++ i )
-        imageData[i] = (uchar) scale(data_[i], min, max);
-    image_ = QImage(imageData, width, height, width, QImage::Format_Indexed8);
-    setPixmap(QPixmap::fromImage(image_));
+    QImage image = data_.getImage();
+    setPixmap(QPixmap::fromImage(image));
 
     setMouseTracking(true);
 }
@@ -84,14 +58,11 @@ void GridDataDisplay::saveCurrentImage()
     qDebug() << saveFile;
 
     if ( not saveFile.isEmpty() )
-        if ( ! QPixmap::fromImage(image_).save(saveFile) )
+        if ( ! QPixmap::fromImage(data_.getImage()).save(saveFile) )
             QMessageBox::critical(this, "Uanble to save", "An error occured when trying to save image " + saveFile, QMessageBox::Ok);
 }
 
 void GridDataDisplay::mouseMoveEvent(QMouseEvent * event)
 {
-    const QSize & size = image_.size();
-    unsigned index = event->x() + (event->y() * size.width());
-
-    emit currentMouseOverValue(data_[index]);
+    emit currentMouseOverValue(data_.value(event->x(), event->y()));
 }

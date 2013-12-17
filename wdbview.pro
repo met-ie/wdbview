@@ -16,13 +16,16 @@ SOURCES += main.cpp\
     dataselector.cpp \
     griddatadisplay.cpp \
     databaseconnectiondialog.cpp \
-    griddatadisplaywidget.cpp
+    griddatadisplaywidget.cpp \
+    griddata.cpp
 
 HEADERS  += mainwindow.h \
     dataselector.h \
     griddatadisplay.h \
     databaseconnectiondialog.h \
-    griddatadisplaywidget.h
+    griddatadisplaywidget.h \
+    griddata.h \
+    logging.h
 
 
 isEmpty(PREFIX):PREFIX = /usr/local

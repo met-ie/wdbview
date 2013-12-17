@@ -29,8 +29,8 @@
 #ifndef GRIDDATADISPLAY_H
 #define GRIDDATADISPLAY_H
 
+#include "griddata.h"
 #include <QLabel>
-#include <QtGui/QImage>
 
 /**
  * Display area for grid images
@@ -60,8 +60,7 @@ protected:
     void mouseMoveEvent(QMouseEvent * event);
 
 private:
-    std::vector<float> data_;
-    QImage image_;
+    GridData data_;
 };
 
 #endif // GRIDDATADISPLAY_H
