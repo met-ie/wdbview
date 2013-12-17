@@ -8,7 +8,7 @@ QT       += core gui sql
 
 TARGET = wdbview
 TEMPLATE = app
-VERSION = 1.1.0
+VERSION = 1.1.1
 
 
 SOURCES += main.cpp\
