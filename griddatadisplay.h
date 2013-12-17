@@ -31,7 +31,6 @@
 
 #include <QLabel>
 #include <QtGui/QImage>
-#include <boost/shared_array.hpp>
 
 /**
  * Display area for grid images
@@ -61,9 +60,7 @@ protected:
     void mouseMoveEvent(QMouseEvent * event);
 
 private:
-    uchar * getData_(float * data, int size) const;
-
-    mutable boost::shared_array<float> data_;
+    std::vector<float> data_;
     QImage image_;
 };
 

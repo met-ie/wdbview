@@ -39,21 +39,6 @@ GridDataDisplay::GridDataDisplay(QWidget *parent) :
 {    
 }
 
-void GridDataDisplay::setImage(int width, int height, float * data)
-{
-    LOG_FUNCTION
-
-    int size = width * height;
-
-    uchar * imageData = getData_(data, size);
-
-    image_ = QImage(imageData, width, height, width, QImage::Format_Indexed8);
-
-    setPixmap(QPixmap::fromImage(image_));
-
-    setMouseTracking(true);
-}
-
 namespace
 {
 uchar scale(float value, float min, float max)
@@ -69,6 +54,30 @@ uchar scale(float value, float min, float max)
 }
 }
 
+void GridDataDisplay::setImage(int width, int height, float * data)
+{
+    LOG_FUNCTION
+
+    int size = width * height;
+    if ( data_.size() == size )
+        std::copy(data, data + size, data_.begin());
+    else
+        data_ = std::vector<float>(data, data + size);
+
+    float min = * std::min_element(data_.begin(), data_.end());
+    float max = * std::max_element(data_.begin(), data_.end());
+    emit newMinMax(min, max);
+
+
+    uchar * imageData = new uchar[data_.size()];
+    for ( unsigned i = 0; i < data_.size(); ++ i )
+        imageData[i] = (uchar) scale(data_[i], min, max);
+    image_ = QImage(imageData, width, height, width, QImage::Format_Indexed8);
+    setPixmap(QPixmap::fromImage(image_));
+
+    setMouseTracking(true);
+}
+
 void GridDataDisplay::saveCurrentImage()
 {
     QString saveFile = QFileDialog::getSaveFileName(this, "Save file", "wdbview.png");
@@ -81,39 +90,8 @@ void GridDataDisplay::saveCurrentImage()
 
 void GridDataDisplay::mouseMoveEvent(QMouseEvent * event)
 {
-    // Dette er feil: Vi må hente verdien fra dataene!
-    // Ta vare på data som lastes ned, og bruk det til oppslag
-
     const QSize & size = image_.size();
     unsigned index = event->x() + (event->y() * size.width());
 
     emit currentMouseOverValue(data_[index]);
-
-    //emit currentMouseOverValue(qGray(image_.pixel(event->x(), event->y())));
-}
-
-
-uchar * GridDataDisplay::getData_(float * data, int size) const
-{
-    LOG_FUNCTION
-
-    float min = * std::min_element(data, data + size);
-    float max = * std::max_element(data, data + size);
-
-    const QSize oldSize = image_.size();
-    if ( oldSize.width() * oldSize.height() != size )
-    {
-        qDebug() << "allocating new data array, of size " << size;
-        data_ = boost::shared_array<float>(new float[size]);
-    }
-    std::copy(data, data + size, data_.get());
-
-    emit newMinMax(min, max);
-
-    uchar * ret = new uchar[size];
-
-    for ( int i = 0; i < size; ++ i )
-        ret[i] = (uchar) scale(data[i], min, max);
-
-    return ret;
 }
