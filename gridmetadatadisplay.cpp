@@ -27,10 +27,13 @@ void GridMetadataDisplay::refresh(const GridData & gridData)
 {
     maxValue->setText(QString::number(gridData.max()));
     minValue->setText(QString::number(gridData.min()));
-    currentValue->setText("-");
 }
 
 void GridMetadataDisplay::setCurrent(float value)
 {
-    currentValue->setText(QString::number(value));
+    QString toShow = "-";
+    if ( value == value ) // not NaN
+        toShow = QString::number(value);
+
+    currentValue->setText(toShow);
 }

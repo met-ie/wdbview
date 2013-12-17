@@ -59,6 +59,7 @@ public slots:
 
 protected:
     void mouseMoveEvent(QMouseEvent * event);
+    void leaveEvent(QEvent * event);
 
 private:
     GridData * data_;

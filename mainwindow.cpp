@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     GridMetadataDisplay * metadataDisplay = new GridMetadataDisplay(gridData, this);
 
     QHBoxLayout * layout = new QHBoxLayout(displayArea_);
-    QVBoxLayout * metadataLayout = new QVBoxLayout(displayArea_);
+    QVBoxLayout * metadataLayout = new QVBoxLayout;
     metadataLayout->addWidget(selector);
     metadataLayout->addWidget(metadataDisplay);
     layout->addLayout(metadataLayout);
@@ -91,8 +91,8 @@ void MainWindow::updateStatus(const GridData & gridData)
     statusBar()->showMessage(message);
 }
 
-void MainWindow::updateCurrentValue(float mousovervalue)
+void MainWindow::updateCurrentValue(float mouseovervalue)
 {
-    QString message = QString("Current value: ") + QString::number(mousovervalue);
+    QString message = QString("Current value: ") + QString::number(mouseovervalue);
     statusBar()->showMessage(message);
 }

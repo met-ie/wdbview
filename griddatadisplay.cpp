@@ -45,26 +45,20 @@ GridDataDisplay::GridDataDisplay(GridData * gridData, QWidget *parent) :
 float GridDataDisplay::getCurrentMouseOverValue() const
 {
     QPoint p = mapFromGlobal(QCursor::pos());
-    try
-    {
-        return data_->value(p.x(), p.y());
-    }
-    catch(std::exception & e)
-    {
-        return std::numeric_limits<float>::quiet_NaN();
-    }
+    //qDebug() << __func__ << ": " << p.x() << ", " <<  p.y() << " = " << data_->value(p.x(), p.y());
+    return data_->value(p.x(), p.y());
 }
 
 void GridDataDisplay::refreshImage()
 {
-    LOG_FUNCTION
-
     QImage image = data_->getImage();
     setPixmap(QPixmap::fromImage(image));
 
     setMouseTracking(true);
 
     adjustSize();
+
+    emit currentMouseOverValue(getCurrentMouseOverValue());
 }
 
 void GridDataDisplay::saveCurrentImage()
@@ -80,4 +74,9 @@ void GridDataDisplay::saveCurrentImage()
 void GridDataDisplay::mouseMoveEvent(QMouseEvent * event)
 {
     emit currentMouseOverValue(data_->value(event->x(), event->y()));
+}
+
+void GridDataDisplay::leaveEvent(QEvent *)
+{
+    emit currentMouseOverValue(std::numeric_limits<float>::quiet_NaN());
 }

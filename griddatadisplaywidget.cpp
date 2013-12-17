@@ -22,12 +22,6 @@ GridDataDisplayWidget::GridDataDisplayWidget(GridData * gridData, QWidget *paren
     connect(display_, SIGNAL(currentMouseOverValue(float)), SIGNAL(currentMouseOverValue(float)));
 }
 
-float GridDataDisplayWidget::getCurrentMouseOverValue() const
-{
-    return display_->getCurrentMouseOverValue();
-}
-
-
 void GridDataDisplayWidget::saveCurrentImage()
 {
     display_->saveCurrentImage();

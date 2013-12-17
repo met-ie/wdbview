@@ -13,8 +13,6 @@ class GridDataDisplayWidget : public QWidget
 public:
     explicit GridDataDisplayWidget(GridData * gridData, QWidget *parent = 0);
 
-    float getCurrentMouseOverValue() const;
-
 signals:
     void currentMouseOverValue(float value) const;
 

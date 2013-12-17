@@ -4,6 +4,7 @@
 #include <boost/scoped_array.hpp>
 #include <cassert>
 #include <algorithm>
+#include <limits>
 
 
 
@@ -58,8 +59,11 @@ GridData::size_type GridData::ySize() const
 
 float GridData::value(size_type x, size_type y) const
 {
+    if ( x >= xSize() or y >= ySize() )
+        return std::numeric_limits<float>::quiet_NaN();
+
     size_type index = (y * xSize()) + x;
-    return data_.at(index);
+    return data_[index];
 }
 
 float GridData::min() const
