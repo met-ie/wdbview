@@ -35,6 +35,11 @@ public:
     /// Get highest value in grid
     float max() const;
 
+    const QString & parameter() const
+    {
+        return parameter_;
+    }
+
     /// Get an image representation of this data
     QImage getImage() const;
 
@@ -44,15 +49,17 @@ public slots:
      * Update contents of the object
      */
     void set(const float * data, unsigned xSize, unsigned ySize);
+    void set(const QString & parameter, const float * data, unsigned xSize, unsigned ySize);
 
 signals:
     /**
      * Emitted when the contained data has changed
      */
-    void newData(const GridData & gridData);
+    void newData(const GridData * gridData);
 
 
 private:
+    QString parameter_;
     std::vector<float> data_;
     mutable std::vector<uchar> imageData_;
     size_type xSize_;

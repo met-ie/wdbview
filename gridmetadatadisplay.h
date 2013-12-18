@@ -12,13 +12,14 @@ class GridMetadataDisplay : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GridMetadataDisplay(GridData * gridData, QWidget *parent = 0);
+    explicit GridMetadataDisplay(QWidget *parent = 0);
 
 public slots:
-    void refresh(const GridData & gridData);
+    void refresh(const GridData * gridData);
     void setCurrent(float value);
 
 private:
+    QLabel * parameter;
     QLabel * maxValue;
     QLabel * minValue;
     QLabel * currentValue;

@@ -35,48 +35,50 @@
 
 
 
-GridDataDisplay::GridDataDisplay(GridData * gridData, QWidget *parent) :
+GridDataDisplay::GridDataDisplay(const GridData * gridData, QWidget *parent) :
     QLabel(parent),
     data_(gridData)
 {    
-    connect(data_, SIGNAL(newData(GridData)), SLOT(refreshImage()));
 }
 
-float GridDataDisplay::getCurrentMouseOverValue() const
+void GridDataDisplay::refreshImage(const GridData * data)
 {
-    QPoint p = mapFromGlobal(QCursor::pos());
-    //qDebug() << __func__ << ": " << p.x() << ", " <<  p.y() << " = " << data_->value(p.x(), p.y());
-    return data_->value(p.x(), p.y());
-}
-
-void GridDataDisplay::refreshImage()
-{
-    QImage image = data_->getImage();
+    QImage image = data->getImage();
     setPixmap(QPixmap::fromImage(image));
 
     setMouseTracking(true);
 
     adjustSize();
 
-    emit currentMouseOverValue(getCurrentMouseOverValue());
+    QPoint p = mapFromGlobal(QCursor::pos());
+    emit mouseAtIndex(p.x(), p.y());
 }
 
 void GridDataDisplay::saveCurrentImage()
 {
+    const QPixmap * image = pixmap();
+    if ( ! image )
+    {
+        QMessageBox::critical(this, "No image", "No image to save");
+        return;
+    }
+
     QString saveFile = QFileDialog::getSaveFileName(this, "Save file", "wdbview.png");
     qDebug() << saveFile;
 
     if ( not saveFile.isEmpty() )
-        if ( ! QPixmap::fromImage(data_->getImage()).save(saveFile) )
+    {
+        if ( ! image->save(saveFile) )
             QMessageBox::critical(this, "Uanble to save", "An error occured when trying to save image " + saveFile, QMessageBox::Ok);
+    }
 }
 
 void GridDataDisplay::mouseMoveEvent(QMouseEvent * event)
 {
-    emit currentMouseOverValue(data_->value(event->x(), event->y()));
+    emit mouseAtIndex(event->x(), event->y());
 }
 
 void GridDataDisplay::leaveEvent(QEvent *)
 {
-    emit currentMouseOverValue(std::numeric_limits<float>::quiet_NaN());
+    emit mouseLeftDisplay();
 }

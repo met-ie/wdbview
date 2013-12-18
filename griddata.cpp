@@ -38,7 +38,14 @@ void GridData::set(const float * data, size_type xSize, size_type ySize)
 
     xSize_ = xSize;
 
-    emit newData(* this);
+    emit newData(this);
+}
+
+void GridData::set(const QString & parameter, const float * data, unsigned xSize, unsigned ySize)
+{
+       parameter_ = parameter;
+       qDebug() << "Parameter: " << parameter_;
+       set(data, xSize, ySize);
 }
 
 GridData::size_type GridData::size() const

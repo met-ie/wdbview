@@ -47,9 +47,20 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void mouseOverValue(float value) const;
+
 public slots:
-    void updateStatus(const GridData & gridData);
+    void updateStatus(const GridData * gridData);
     void updateCurrentValue(float mousovervalue);
+
+private slots:
+
+    void mouseAtImageIndex(int x,int y) const;
+    void mouseLeftImageDisplay() const;
+
+private:
+    const GridData * gridData_;
 };
 
 #endif // MAINWINDOW_H

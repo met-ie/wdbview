@@ -5,28 +5,31 @@
 #include "griddata.h"
 
 
-GridMetadataDisplay::GridMetadataDisplay(GridData * gridData, QWidget *parent) :
+GridMetadataDisplay::GridMetadataDisplay(QWidget *parent) :
     QWidget(parent)
 {
+    parameter = new QLabel(this);
     maxValue = new QLabel(this);
     minValue = new QLabel(this);
     currentValue = new QLabel(this);
 
     QGridLayout * layout = new QGridLayout(this);
-    layout->addWidget(new QLabel("High"), 0, 0);
-    layout->addWidget(maxValue, 0, 1);
-    layout->addWidget(new QLabel("Low"), 1, 0);
-    layout->addWidget(minValue, 1, 1);
-    layout->addWidget(new QLabel("Current"), 2, 0);
-    layout->addWidget(currentValue, 2, 1);
-
-    connect(gridData, SIGNAL(newData(GridData)), SLOT(refresh(GridData)));
+    int row = 0;
+    layout->addWidget(new QLabel("Parameter"), row, 0);
+    layout->addWidget(parameter, row++, 1);
+    layout->addWidget(new QLabel("High"), row, 0);
+    layout->addWidget(maxValue, row++, 1);
+    layout->addWidget(new QLabel("Low"), row, 0);
+    layout->addWidget(minValue, row++, 1);
+    layout->addWidget(new QLabel("Current"), row, 0);
+    layout->addWidget(currentValue, row++, 1);
 }
 
-void GridMetadataDisplay::refresh(const GridData & gridData)
+void GridMetadataDisplay::refresh(const GridData * gridData)
 {
-    maxValue->setText(QString::number(gridData.max()));
-    minValue->setText(QString::number(gridData.min()));
+    parameter->setText(gridData->parameter());
+    maxValue->setText(QString::number(gridData->max()));
+    minValue->setText(QString::number(gridData->min()));
 }
 
 void GridMetadataDisplay::setCurrent(float value)

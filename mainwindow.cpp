@@ -32,7 +32,7 @@
 #include "griddatadisplaywidget.h"
 #include "griddata.h"
 #include <QtGui>
-
+#include <limits>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -41,11 +41,10 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget * displayArea_ = new QWidget(this);
     DataSelector * selector = new DataSelector(this);
 
+    gridData_ = selector->gridData();
 
-    GridData * gridData = new GridData(this);
-
-    GridDataDisplayWidget * display = new GridDataDisplayWidget(gridData, this);
-    GridMetadataDisplay * metadataDisplay = new GridMetadataDisplay(gridData, this);
+    GridDataDisplayWidget * display = new GridDataDisplayWidget(gridData_, this);
+    GridMetadataDisplay * metadataDisplay = new GridMetadataDisplay(this);
 
     QHBoxLayout * layout = new QHBoxLayout(displayArea_);
     QVBoxLayout * metadataLayout = new QVBoxLayout;
@@ -56,7 +55,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(displayArea_);
 
-    connect(selector, SIGNAL(selected(const float*,uint,uint)), gridData, SLOT(set(const float*,uint,uint)));
+    connect(gridData_, SIGNAL(newData(const GridData*)), display, SLOT(refreshImage(const GridData *)));
+    connect(gridData_, SIGNAL(newData(const GridData*)), metadataDisplay, SLOT(refresh(const GridData *)));
+    connect(selector, SIGNAL(selected(const float*,uint,uint)), gridData_, SLOT(set(const float*,uint,uint)));
 
     QAction * connectAction = new QAction("&Connect", this);
     connectAction->setShortcut(QKeySequence("CTRL+O"));
@@ -75,19 +76,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     statusBar()->showMessage("Ready", 500);
 
-    connect(gridData, SIGNAL(newData(GridData)), SLOT(updateStatus(GridData)));
+    connect(gridData_, SIGNAL(newData(const GridData *)), SLOT(updateStatus(const GridData *)));
 
-    connect(display, SIGNAL(currentMouseOverValue(float)), SLOT(updateCurrentValue(float)));
-    connect(display, SIGNAL(currentMouseOverValue(float)), metadataDisplay, SLOT(setCurrent(float)));
+    connect(display, SIGNAL(mouseAtIndex(int,int)), SLOT(mouseAtImageIndex(int,int)));
+    connect(display, SIGNAL(mouseLeftDisplay()), SLOT(mouseLeftImageDisplay()));
+
+    connect(this, SIGNAL(mouseOverValue(float)), SLOT(updateCurrentValue(float)));
+    connect(this, SIGNAL(mouseOverValue(float)), metadataDisplay, SLOT(setCurrent(float)));
 }
 
 MainWindow::~MainWindow()
 {   
 }
 
-void MainWindow::updateStatus(const GridData & gridData)
+void MainWindow::updateStatus(const GridData * gridData)
 {
-    QString message = QString("Low: ") + QString::number(gridData.min()) + QString(" High: ") + QString::number(gridData.max());
+    QString message = QString("Low: ") + QString::number(gridData->min()) + QString(" High: ") + QString::number(gridData->max());
     statusBar()->showMessage(message);
 }
 
@@ -96,3 +100,14 @@ void MainWindow::updateCurrentValue(float mouseovervalue)
     QString message = QString("Current value: ") + QString::number(mouseovervalue);
     statusBar()->showMessage(message);
 }
+
+void MainWindow::mouseAtImageIndex(int x,int y) const
+{
+    emit mouseOverValue(gridData_->value(x, y));
+}
+
+void MainWindow::mouseLeftImageDisplay() const
+{
+    emit mouseOverValue(std::numeric_limits<float>::quiet_NaN());
+}
+

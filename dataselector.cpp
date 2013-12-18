@@ -28,6 +28,7 @@
 
 #include "dataselector.h"
 #include "databaseconnectiondialog.h"
+#include "griddata.h"
 #include <QtGui>
 #include <QtSql/QSqlQueryModel>
 #include <QtSql/QSqlQuery>
@@ -39,6 +40,7 @@ DataSelector::DataSelector(QWidget *parent) :
     model_(0),
     connectionDialog_(0)
 {
+    gridData_ = new GridData(this);
     view_ = new QTreeView(this);
     view_->setSortingEnabled(true);
     view_->setSelectionBehavior(QTableView::SelectRows);
@@ -160,6 +162,8 @@ void DataSelector::entryActivated(const QModelIndex & index)
     if ( item->hasChildren() )
         return;
 
+    QString parameter = item->parent()->text();
+
     //QModelIndex i = index.sibling(index.row(), 1);
     QVariant vdata = model_->data(index, Qt::UserRole); // getting GID value from UserRole
 
@@ -183,7 +187,11 @@ void DataSelector::entryActivated(const QModelIndex & index)
     if ( ! data )
         qDebug("No data");
     else
+    {
+        gridData_->set(parameter, data, w, h);
+        emit selected(* gridData_);
         emit selected(data, w, h);
+    }
 }
 
 void DataSelector::entryActivated(const QItemSelection & selection, const QItemSelection & /*old*/)

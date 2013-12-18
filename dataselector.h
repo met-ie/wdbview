@@ -36,6 +36,7 @@
 
 class QStandardItemModel;
 class DatabaseConnectionDialog;
+class GridData;
 
 /**
  * Table for showing all available data in database
@@ -47,6 +48,11 @@ public:
     explicit DataSelector(QWidget *parent = 0);
     ~DataSelector();
     
+    const GridData * gridData() const
+    {
+        return gridData_;
+    }
+
 public slots:
     /**
      * Show a connection dialog, and attempt to connect to a wdb database
@@ -63,6 +69,7 @@ signals:
      * Emitted when a new entry has been highlighted
      */
     void selected(const float * data, unsigned width, unsigned height);
+    void selected(const GridData & gridData);
 
 private slots:
     void entryActivated(const QModelIndex & index);
@@ -70,6 +77,7 @@ private slots:
 
 private:
 
+    GridData * gridData_;
     QSqlDatabase database_;
     QTreeView * view_;
     QStandardItemModel * model_;

@@ -4,7 +4,7 @@
 #include <QScrollArea>
 #include <QMouseEvent>
 
-GridDataDisplayWidget::GridDataDisplayWidget(GridData * gridData, QWidget *parent) :
+GridDataDisplayWidget::GridDataDisplayWidget(const GridData * gridData, QWidget *parent) :
     QWidget(parent)
 {
     display_ = new GridDataDisplay(gridData, this);
@@ -20,7 +20,15 @@ GridDataDisplayWidget::GridDataDisplayWidget(GridData * gridData, QWidget *paren
     mainLayout->addWidget(scrollArea);
 
     connect(display_, SIGNAL(currentMouseOverValue(float)), SIGNAL(currentMouseOverValue(float)));
+    connect(display_, SIGNAL(mouseAtIndex(int,int)), SIGNAL(mouseAtIndex(int,int)));
+    connect(display_, SIGNAL(mouseLeftDisplay()), SIGNAL(mouseLeftDisplay()));
 }
+
+void GridDataDisplayWidget::refreshImage(const GridData * data)
+{
+    display_->refreshImage(data);
+}
+
 
 void GridDataDisplayWidget::saveCurrentImage()
 {
