@@ -27,6 +27,8 @@ public slots:
      */
     void saveCurrentImage();
 
+    void zoomTo(double scaleFactor);
+
 private:
     GridDataDisplay * display_;
 };

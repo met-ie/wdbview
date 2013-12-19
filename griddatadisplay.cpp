@@ -43,12 +43,17 @@ GridDataDisplay::GridDataDisplay(const GridData * gridData, QWidget *parent) :
 
 void GridDataDisplay::refreshImage(const GridData * data)
 {
+    QSize lastSize = size();
+    if ( ! pixmap() )
+        lastSize = QSize(data->xSize(), data->ySize());
+
     QImage image = data->getImage();
     setPixmap(QPixmap::fromImage(image));
 
     setMouseTracking(true);
 
-    adjustSize();
+    //adjustSize();
+    resize(lastSize);
 
     QPoint p = mapFromGlobal(QCursor::pos());
     emit mouseAtIndex(p.x(), p.y());
@@ -73,12 +78,35 @@ void GridDataDisplay::saveCurrentImage()
     }
 }
 
+void GridDataDisplay::zoomTo(double scaleFactor)
+{
+    resize(pixmap()->size() * scaleFactor);
+}
+
 void GridDataDisplay::mouseMoveEvent(QMouseEvent * event)
 {
-    emit mouseAtIndex(event->x(), event->y());
+    QSize displaySize = size();
+    QSize pixmapSize = pixmap()->size();
+    double scale = displaySize.width() / pixmapSize.width();
+    emit mouseAtIndex(event->x() / scale, event->y() / scale);
 }
 
 void GridDataDisplay::leaveEvent(QEvent *)
 {
     emit mouseLeftDisplay();
 }
+
+//void GridDataDisplay::mouseReleaseEvent(QMouseEvent * event)
+//{
+//    switch ( event->button() )
+//    {
+//    case Qt::LeftButton:
+//        zoomIn();
+//        break;
+//    case Qt::RightButton:
+//        zoomOut();
+//        break;
+//    default:
+//        break;
+//    }
+//}

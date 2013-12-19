@@ -55,10 +55,12 @@ public slots:
      */
     void saveCurrentImage();
 
+    void zoomTo(double scaleFactor);
 
 protected:
     void mouseMoveEvent(QMouseEvent * event);
     void leaveEvent(QEvent * event);
+    //void mouseReleaseEvent(QMouseEvent * event);
 
 private:
     const GridData * data_;

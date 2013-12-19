@@ -12,6 +12,7 @@ GridDataDisplayWidget::GridDataDisplayWidget(const GridData * gridData, QWidget 
     display_->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     display_->setScaledContents(true);
 
+
     QScrollArea * scrollArea = new QScrollArea(this);
     scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setWidget(display_);
@@ -33,4 +34,9 @@ void GridDataDisplayWidget::refreshImage(const GridData * data)
 void GridDataDisplayWidget::saveCurrentImage()
 {
     display_->saveCurrentImage();
+}
+
+void GridDataDisplayWidget::zoomTo(double scaleFactor)
+{
+    display_->zoomTo(scaleFactor);
 }

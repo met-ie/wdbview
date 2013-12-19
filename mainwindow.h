@@ -32,8 +32,8 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QPixmap>
 
-class QLabel;
 class GridData;
+class GridDataDisplayWidget;
 
 
 /**
@@ -59,8 +59,13 @@ private slots:
     void mouseAtImageIndex(int x,int y) const;
     void mouseLeftImageDisplay() const;
 
+    void zoomIn();
+    void zoomOut();
+
 private:
     const GridData * gridData_;
+    GridDataDisplayWidget * display;
+    double zoom_;
 };
 
 #endif // MAINWINDOW_H

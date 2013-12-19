@@ -36,14 +36,15 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+      zoom_(1)
 {
     QWidget * displayArea_ = new QWidget(this);
     DataSelector * selector = new DataSelector(this);
 
     gridData_ = selector->gridData();
 
-    GridDataDisplayWidget * display = new GridDataDisplayWidget(gridData_, this);
+    display = new GridDataDisplayWidget(gridData_, this);
     GridMetadataDisplay * metadataDisplay = new GridMetadataDisplay(this);
 
     QHBoxLayout * layout = new QHBoxLayout(displayArea_);
@@ -67,12 +68,22 @@ MainWindow::MainWindow(QWidget *parent)
     QAction * saveImageAction = new QAction("&Save", this);
     saveImageAction->setShortcut(QKeySequence("CTRL+S"));
     connect(saveImageAction, SIGNAL(triggered()), display, SLOT(saveCurrentImage()));
+    QAction * zoomInAction = new QAction("Zoom &in", this);
+    zoomInAction->setShortcut((QKeySequence("CTRL++")));
+    connect(zoomInAction, SIGNAL(triggered()), SLOT(zoomIn()));
+    QAction * zoomOutAction = new QAction("Zoom &out", this);
+    zoomOutAction->setShortcut((QKeySequence("CTRL+-")));
+    connect(zoomOutAction, SIGNAL(triggered()), SLOT(zoomOut()));
 
 
     QMenu * fileMenu = menuBar()->addMenu("&File");
     fileMenu->addAction(connectAction);
     fileMenu->addAction(saveImageAction);
     fileMenu->addAction(exitAction);
+
+    QMenu * viewMenu = menuBar()->addMenu("&View");
+    viewMenu->addAction(zoomInAction);
+    viewMenu->addAction(zoomOutAction);
 
     statusBar()->showMessage("Ready", 500);
 
@@ -111,3 +122,14 @@ void MainWindow::mouseLeftImageDisplay() const
     emit mouseOverValue(std::numeric_limits<float>::quiet_NaN());
 }
 
+void MainWindow::zoomIn()
+{
+    zoom_ *= 2;
+    display->zoomTo(zoom_);
+}
+
+void MainWindow::zoomOut()
+{
+    zoom_ /= 2;
+    display->zoomTo(zoom_);
+}
