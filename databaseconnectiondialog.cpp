@@ -29,6 +29,7 @@
 #include "databaseconnectiondialog.h"
 #include "logging.h"
 #include <QtGui>
+#include <QSqlError>
 
 
 
@@ -101,7 +102,8 @@ bool DatabaseConnectionDialog::getDatabase(QSqlDatabase & database)
 
         if ( ! database.open() )
         {
-            QMessageBox::critical(this, "Unable to connect", "Unable to connect to database", QMessageBox::Ok);
+        	QSqlError error = database.lastError();
+            QMessageBox::critical(this, "Unable to connect", error.text(), QMessageBox::Ok);
             return getDatabase(database);
         }
         return true;
